@@ -164,6 +164,7 @@ def uniformCostSearch(problem):
                     successorPath.append(successor)
                     fringe.push(successorPath)
     print "Failure"
+    return []
     util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
