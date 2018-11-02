@@ -72,96 +72,67 @@ def tinyMazeSearch(problem):
     w = Directions.WEST
     return  [s, s, w, s, w, w, s, w]
 
+
+
+def genericSearch(problem, fringe, pushToFringe):
+    closed = set()
+    start = (problem.getStartState(), 0, [])  # (node, cost, path)
+    pushToFringe(fringe, start, 0)
+
+    while not fringe.isEmpty():
+        (node, cost, path) = fringe.pop()
+
+        if problem.isGoalState(node):
+            return path
+
+        if node not in closed:
+            closed.add(node)
+
+            for child_node, child_action, child_cost in problem.getSuccessors(node):
+                new_cost = cost + child_cost
+                new_path = path + [child_action]
+                new_state = (child_node, new_cost, new_path)
+                pushToFringe(fringe, new_state, new_cost)
+
+
 def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
-
     Your search algorithm needs to return a list of actions that reaches the
     goal. Make sure to implement a graph search algorithm.
-
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
-
     print "Start:", problem.getStartState()
     print "Is the start a goal?", problem.isGoalState(problem.getStartState())
     print "Start's successors:", problem.getSuccessors(problem.getStartState())
     """
-    "*** YOUR CODE HERE ***"
     fringe = util.Stack()
-    closed = []
-    fringe.push([(problem.getStartState(), "Stop" , 0)])
-    
-    while not fringe.isEmpty():
-        node = fringe.pop()
-            
-        s = node[len(node)-1]
-        s = s[0]
-        if problem.isGoalState(s):
-            return [x[1] for x in node][1:]
-                
-        if s not in closed:
-            closed.append(s)
-                
-            for successor in problem.getSuccessors(s):
-                if successor[0] not in closed:
-                    successorPath = node[:]
-                    successorPath.append(successor)
-                    fringe.push(successorPath)
-    print "Failure"
-    return []
+    def pushToFringe(fringe, state, cost):
+        fringe.push(state)
+
+    return genericSearch(problem, fringe, pushToFringe)
+
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
     fringe = util.Queue()
-    closed = []
-    fringe.push([(problem.getStartState(), "Stop" , 0)])
-    
-    while not fringe.isEmpty():
-        node = fringe.pop()
-            
-        s = node[len(node)-1]
-        s = s[0]
-        if problem.isGoalState(s):
-            return [x[1] for x in node][1:]
-                
-        if s not in closed:
-            closed.append(s)
-                
-            for successor in problem.getSuccessors(s):
-                if successor[0] not in closed:
-                    successorPath = node[:]
-                    successorPath.append(successor)
-                    fringe.push(successorPath)
-    print "Failure"
-    return []
+    def pushToFringe(fringe, state, cost):
+        fringe.push(state)
+
+    return genericSearch(problem, fringe, pushToFringe)
+
+
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath])
-    fringe = util.PriorityQueueWithFunction(cost)
-    closed = []
-    fringe.push([(problem.getStartState(), "Stop" , 0)])
-    
-    while not fringe.isEmpty():
-        node = fringe.pop()
-            
-        s = node[len(node)-1]
-        s = s[0]
-        if problem.isGoalState(s):
-            return [x[1] for x in node][1:]
-                
-        if s not in closed:
-            closed.append(s)
-                
-            for successor in problem.getSuccessors(s):
-                if successor[0] not in closed:
-                    successorPath = node[:]
-                    successorPath.append(successor)
-                    fringe.push(successorPath)
-    print "Failure"
-    return []
+    fringe = util.PriorityQueue()
+    def pushToFringe(fringe, state, cost):
+        fringe.push(state, cost)
+
+    return genericSearch(problem, fringe, pushToFringe)
+
+
 
 def nullHeuristic(state, problem=None):
     """
@@ -172,31 +143,12 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    cost = lambda aPath: problem.getCostOfActions([x[1] for x in aPath]) + heuristic(aPath[len(aPath)-1][0], problem)
-    fringe = util.PriorityQueueWithFunction(cost)
-    closed = []
-    fringe.push([(problem.getStartState(), "Stop" , 0)])
-    
-    while not fringe.isEmpty():
-        node = fringe.pop()
-            
-        s = node[len(node)-1]
-        s = s[0]
-        if problem.isGoalState(s):
-            return [x[1] for x in node][1:]
-                
-        if s not in closed:
-            closed.append(s)
-                
-            for successor in problem.getSuccessors(s):
-                if successor[0] not in closed:
-                    successorPath = node[:]
-                    successorPath.append(successor)
-                    fringe.push(successorPath)
-    print "Failure"
-    return []
+    fringe = util.PriorityQueue()
+    def pushToFringe(fringe, state, cost):
+        new_cost = cost + heuristic(state[0], problem)
+        fringe.push(state, new_cost)
 
+    return genericSearch(problem, fringe, pushToFringe)
 
 # Abbreviations
 bfs = breadthFirstSearch
