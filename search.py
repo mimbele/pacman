@@ -110,8 +110,6 @@ def depthFirstSearch(problem):
     print "Failure"
     return []
 
-    util.raiseNotDefined()
-
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
     "*** YOUR CODE HERE ***"
@@ -137,7 +135,6 @@ def breadthFirstSearch(problem):
                     fringe.push(successorPath)
     print "Failure"
     return []
-    util.raiseNotDefined()
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
@@ -165,7 +162,6 @@ def uniformCostSearch(problem):
                     fringe.push(successorPath)
     print "Failure"
     return []
-    util.raiseNotDefined()
 
 def nullHeuristic(state, problem=None):
     """
@@ -200,7 +196,6 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     fringe.push(successorPath)
     print "Failure"
     return []
-    util.raiseNotDefined()
 
 
 # Abbreviations
